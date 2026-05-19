@@ -1,0 +1,39 @@
+{
+  "name": "shulker-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev":     "vite",
+    "build":   "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint":    "eslint src --ext ts,tsx --report-unused-disable-directives"
+  },
+  "dependencies": {
+    "react":                   "^18.3.1",
+    "react-dom":               "^18.3.1",
+    "react-router-dom":        "^6.24.0",
+    "react-icons":             "^5.2.1",
+    "zustand":                 "^4.5.4",
+    "@tanstack/react-query":   "^5.45.1",
+    "howler":                  "^2.2.4",
+    "socket.io-client":        "^4.7.5",
+    "axios":                   "^1.7.2",
+    "framer-motion":           "^11.2.12",
+    "clsx":                    "^2.1.1",
+    "react-virtuoso":          "^4.7.11",
+    "react-dnd":               "^16.0.1",
+    "react-dnd-html5-backend":  "^16.0.1"
+  },
+  "devDependencies": {
+    "@types/react":            "^18.3.3",
+    "@types/react-dom":        "^18.3.0",
+    "@types/howler":           "^2.2.11",
+    "@vitejs/plugin-react":    "^4.3.1",
+    "typescript":              "^5.4.5",
+    "tailwindcss":             "^3.4.4",
+    "autoprefixer":            "^10.4.19",
+    "postcss":                 "^8.4.39",
+    "vite":                    "^5.3.1"
+  }
+}
