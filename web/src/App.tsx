@@ -1,62 +1,44 @@
-import { useEffect } from 'react'
-import { RouterProvider } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
-import { Howler } from 'howler'
-import { router } from './router'
-import { useThemeStore } from '@/store/themeStore'
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
-import { useMediaSession } from '@/hooks/useMediaSession'
-import SplashScreen, { useSplash } from '@/components/ui/SplashScreen'
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import NotFound from "@/pages/NotFound";
+import { Route, Switch } from "wouter";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import Landing from "./pages/Landing";
+import AppPage from "./pages/App";
 
-// ── Inner app — hooks that need router context ────────────────
-function AppInner() {
-  useKeyboardShortcuts()
-  useMediaSession()
-  return <RouterProvider router={router} />
-}
 
-// ── Root ──────────────────────────────────────────────────────
-export default function App() {
-  const initTheme       = useThemeStore((s) => s.initTheme)
-  const { show, dismiss } = useSplash()
-
-  // Apply saved theme on mount
-  useEffect(() => {
-    initTheme()
-  }, [initTheme])
-
-  // Unlock Web Audio context on first user gesture
-  // Required on mobile browsers — audio won't play until unlocked
-  useEffect(() => {
-    const unlock = () => {
-      if (Howler.ctx && Howler.ctx.state === 'suspended') {
-        Howler.ctx.resume().catch(() => {})
-      }
-      document.removeEventListener('touchstart', unlock)
-      document.removeEventListener('touchend',   unlock)
-      document.removeEventListener('click',      unlock)
-      document.removeEventListener('keydown',    unlock)
-    }
-
-    document.addEventListener('touchstart', unlock, { passive: true })
-    document.addEventListener('touchend',   unlock, { passive: true })
-    document.addEventListener('click',      unlock)
-    document.addEventListener('keydown',    unlock)
-
-    return () => {
-      document.removeEventListener('touchstart', unlock)
-      document.removeEventListener('touchend',   unlock)
-      document.removeEventListener('click',      unlock)
-      document.removeEventListener('keydown',    unlock)
-    }
-  }, [])
-
+function Router() {
   return (
-    <>
-      <AnimatePresence>
-        {show && <SplashScreen onDone={dismiss} />}
-      </AnimatePresence>
-      {!show && <AppInner />}
-    </>
-  )
+    <Switch>
+      <Route path={"/"} component={Landing} />
+      <Route path={"/app"} component={AppPage} />
+      <Route path={"/404"} component={NotFound} />
+      {/* Final fallback route */}
+      <Route component={NotFound} />
+    </Switch>
+  );
 }
+
+// NOTE: About Theme
+// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
+//   to keep consistent foreground/background color across components
+// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <ThemeProvider
+        defaultTheme="light"
+        // switchable
+      >
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
+  );
+}
+
+export default App;
